@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc -p tsconfig.json && cp manifest.json dist/ && cp -r assets dist/",
+    "watch": "tsc -p tsconfig.json --watch"
   },
   "repository": {
     "type": "git",
@@ -23,6 +24,7 @@
     "fuse.js": "^7.1.0"
   },
   "devDependencies": {
+    "@types/chrome": "^0.0.317",
     "typescript": "^5.8.3"
   }
 }

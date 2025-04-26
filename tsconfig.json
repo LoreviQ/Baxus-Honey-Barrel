@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+      "target": "ES2016", // Target modern JS features supported by Chrome
+      "module": "CommonJS", // Or ESNext if preferred, adjust manifest/background script loading if needed
+      "outDir": "./dist", // Output directory as specified in structure
+      "rootDir": "./src", // Source directory
+      "strict": true, // Enable strict type checking
+      "esModuleInterop": true, // Allows default imports from commonjs modules
+      "skipLibCheck": true, // Skip type checking of declaration files
+      "forceConsistentCasingInFileNames": true, // Ensure consistent file casing
+      "lib": ["ES2016", "DOM"] // Include necessary libraries
+    },
+    "include": ["src/**/*"], // Include all files in src
+    "exclude": ["node_modules"] // Exclude node_modules
+  }

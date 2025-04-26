@@ -3,7 +3,7 @@
 .
 ├── manifest.json               # Core extension configuration 
 ├── package.json                # NPM dependencies and scripts
-├── tsconfig.json               # (If using TypeScript) TypeScript config
+├── tsconfig.json               # TypeScript config
 ├──.gitignore                   # Specifies intentionally untracked files
 ├── README.md                   # Project overview, setup, usage 
 │

@@ -1,0 +1,20 @@
+{
+    "manifest_version": 3,
+    "name": "BAXUS API Tester",
+    "version": "0.1",
+    "description": "Makes a request to the BAXUS search API when the icon is clicked.",
+    "icons": {
+      "16": "assets/icons/icon16.png",
+      "48": "assets/icons/icon48.png",
+      "128": "assets/icons/icon128.png"
+    },
+    "background": {
+      "service_worker": "background/service-worker.js"
+    },
+    "action": {
+      "default_title": "Fetch BAXUS Data"
+    },
+    "host_permissions": [
+      "https://services.baxus.co/*"
+    ]
+  }
