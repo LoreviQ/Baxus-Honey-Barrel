@@ -1,3 +1,5 @@
+import { ScrapedProductData } from "../types/scrapedData";
+
 /**
  * Checks if the current page looks like a valid TWE product page.
  */
@@ -22,18 +24,14 @@ function scrapeTWEProductDetails(): void {
         // --- Selectors ---
         const nameSelector = "h1.product-main__name";
         const priceSelector = ".product-action__price";
-        // Select the element containing both volume and ABV
         const volumeAbvSelector = ".product-main__data";
-        // Select the "More from..." link to extract the brand
         const brandLinkSelector = 'nav.product-navigation a[title^="More from"]';
 
 
         // --- Extraction using DOM APIs ---
         const nameElement = document.querySelector(nameSelector);
         const priceElement = document.querySelector(priceSelector);
-        // Get the element containing volume and ABV
         const volumeAbvElement = document.querySelector(volumeAbvSelector);
-        // Get the brand link element
         const brandLinkElement = document.querySelector(brandLinkSelector);
 
 
@@ -48,8 +46,8 @@ function scrapeTWEProductDetails(): void {
         let productPrice: number | null = null;
         let currency: string | null = null;
         let productVolumeMl: number | null = null;
-        let productAbv: number | null = null; // Variable for ABV
-        let productBrand: string | null = null; // Variable for Brand
+        let productAbv: number | null = null;
+        let productBrand: string | null = null;
 
         // --- Data Cleaning ---
         if (priceText) {
@@ -96,13 +94,13 @@ function scrapeTWEProductDetails(): void {
         }
 
         // --- Send Data ---
-        const scrapedData = {
+        const scrapedData: ScrapedProductData = {
             name: productName,
             price: productPrice,
             currency: currency,
             volume: productVolumeMl,
-            brand: productBrand, // Add extracted brand
-            abv: productAbv,     // Add extracted ABV
+            brand: productBrand,
+            abv: productAbv,
             sourceUrl: window.location.href,
             sourceSite: 'The Whisky Exchange'
         };

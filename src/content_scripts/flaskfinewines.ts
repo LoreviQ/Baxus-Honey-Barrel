@@ -1,3 +1,5 @@
+import { ScrapedProductData } from "../types/scrapedData";
+
 /**
  * Checks if the current page looks like a valid FFW product page.
  */
@@ -30,7 +32,7 @@ function scrapeFFWProductDetails(): void {
         const attributeListElement = document.querySelector(attributeListSelector);
 
         const productName = nameElement?.textContent?.trim() || null;
-        const priceText = priceElement?.textContent?.trim() || null; // e.g., £35400
+        const priceText = priceElement?.textContent?.trim() || null;
 
         let productPrice: number | null = null;
         let currency: string | null = null;
@@ -90,7 +92,7 @@ function scrapeFFWProductDetails(): void {
         }
 
         // --- Send Data ---
-        const scrapedData = {
+        const scrapedData: ScrapedProductData = {
             name: productName,
             price: productPrice,
             currency: currency,
