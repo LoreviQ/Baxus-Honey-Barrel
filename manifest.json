@@ -13,7 +13,8 @@
       "type": "module"
     },
     "action": {
-      "default_title": "Fetch BAXUS Data"
+      "default_title": "Fetch BAXUS Data",
+      "default_popup": "popup/popup.html"
     },
     "host_permissions": [
       "https://services.baxus.co/*"
@@ -29,5 +30,11 @@
         "js": ["content_scripts/flaskfinewines.js"],
         "run_at": "document_idle" 
       }
-    ]
+    ],
+    "web_accessible_resources": [
+        {
+          "resources": [ "assets/*", "popup/popup.css" ],
+          "matches": [ "<all_urls>" ]
+        }
+      ]
   }

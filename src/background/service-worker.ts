@@ -1,13 +1,5 @@
-import { searchListings } from '../utils/api';
 import { ScrapedProductData } from '../types/scrapedData';
 import { checkBaxus } from '../utils/checkBaxus'; // Import the new utility function
-
-// Listen for when the user clicks the extension's browser action icon
-chrome.action.onClicked.addListener(async (tab: chrome.tabs.Tab) => {
-    console.log("Extension icon clicked. Fetching BAXUS data...");
-    const listings = await searchListings();
-    console.log("Fetched listings:", listings);
-});
 
 // Listen for messages from content scripts
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {

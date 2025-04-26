@@ -34,6 +34,7 @@ async function copyStaticFiles() {
   try {
     await cp('manifest.json', `${outdir}/manifest.json`);
     await cp('assets', `${outdir}/assets`, { recursive: true });
+    await cp('src/popup', `${outdir}/popup`, { recursive: true }); // Add this line to copy the popup directory
 
     // Copy popup HTML/CSS if they exist and aren't handled by esbuild
     // await cp('public/popup.html', `${outdir}/popup.html`);

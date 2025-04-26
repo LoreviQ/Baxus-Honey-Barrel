@@ -1,0 +1,43 @@
+body {
+  margin: 0;
+  padding: 0;
+  min-width: 400px;
+  min-height: 350px;
+  background-color: transparent;
+}
+
+.container {
+  padding: 5px;
+  min-width: 400px;
+  min-height: 350px;
+  position: relative;
+  overflow: hidden;
+  background: conic-gradient(from 90deg, #f4d345, #e59909, #f4d345);
+}
+
+.content-area { 
+  background-color: #f8f6f1;
+  border-radius: 5px;
+  position: relative; 
+  min-width: 400px;
+  min-height: 350px;
+  overflow: hidden;
+  padding: 10px;
+}
+
+#popup-image {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  max-width: 240px;
+  object-fit: contain;
+  display: block;
+}
+
+.greeting {
+    position: relative;
+    margin: 0 0 10px 0;
+    color: black;
+    font-family: sans-serif; 
+    font-size: 16px; 
+  }
