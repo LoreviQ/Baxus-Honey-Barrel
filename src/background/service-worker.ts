@@ -1,5 +1,5 @@
 import { searchListings } from '../utils/api';
-import { ScrapedProductData } from '../types/scrapedData'; // Import the type
+import { ScrapedProductData } from '../types/scrapedData';
 
 // Listen for when the user clicks the extension's browser action icon
 chrome.action.onClicked.addListener(async (tab: chrome.tabs.Tab) => {
@@ -19,7 +19,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     }
 
 });
-
   
 // Keep the service worker alive briefly after install/update for initialization if needed
 chrome.runtime.onInstalled.addListener(() => {
