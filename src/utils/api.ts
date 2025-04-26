@@ -10,13 +10,15 @@ export const api = axios.create({
 export async function searchListings(
     from: number = 0,
     size: number = 20,
-    listed: boolean = true
+    listed: boolean = true,
+    query: string | undefined = undefined
 ): Promise<Listing[]> { 
     const response = await api.get<ListingResponseItem[]>('/api/search/listings', {
         params: {
             from,
             size,
-            listed
+            listed,
+            query,
         }
     });
     // Extract the _source object from each item in the response array
