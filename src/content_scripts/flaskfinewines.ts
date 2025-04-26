@@ -103,14 +103,7 @@ function scrapeFFWProductDetails(): void {
             sourceSite: 'Flask Fine Wines',
         };
         console.log("Honey Barrel (FFW): Scraped Data:", scrapedData);
-        chrome.runtime.sendMessage({ type: "SCRAPED_DATA", data: scrapedData }, (response) => {
-            if (chrome.runtime.lastError) {
-                console.error("Honey Barrel (FFW): Error sending message:", chrome.runtime.lastError.message);
-            } else {
-                console.log("Honey Barrel (FFW): Message sent to background. Response:", response);
-            }
-        });
-
+        chrome.runtime.sendMessage({ type: "SCRAPED_DATA", data: scrapedData });
     } catch (error) {
         console.error("Honey Barrel (FFW): Error during scraping:", error);
     }

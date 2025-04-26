@@ -105,13 +105,7 @@ function scrapeTWEProductDetails(): void {
             sourceSite: 'The Whisky Exchange'
         };
         console.log("Honey Barrel (TWE): Scraped Data:", scrapedData);
-        chrome.runtime.sendMessage({ type: "SCRAPED_DATA", data: scrapedData }, (response) => {
-            if (chrome.runtime.lastError) {
-                console.error("Honey Barrel (TWE): Error sending message:", chrome.runtime.lastError.message);
-            } else {
-                console.log("Honey Barrel (TWE): Message sent to background. Response:", response);
-            }
-        });
+        chrome.runtime.sendMessage({ type: "SCRAPED_DATA", data: scrapedData });
 
     } catch (error) {
         console.error("Honey Barrel (TWE): Error during scraping:", error);
