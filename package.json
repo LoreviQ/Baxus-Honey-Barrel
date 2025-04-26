@@ -21,13 +21,13 @@
   "description": "",
   "dependencies": {
     "axios": "^1.9.0",
-    "cheerio": "^1.0.0",
     "fuse.js": "^7.1.0"
   },
   "devDependencies": {
     "@types/chrome": "^0.0.317",
     "cpy-cli": "^5.0.0",
     "esbuild": "^0.25.3",
+    "glob": "^11.0.2",
     "typescript": "^5.8.3"
   }
 }

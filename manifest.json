@@ -17,5 +17,17 @@
     },
     "host_permissions": [
       "https://services.baxus.co/*"
+    ],
+    "content_scripts": [
+      {
+        "matches": ["https://www.thewhiskyexchange.com/p/*"],
+        "js": ["content_scripts/thewhiskyexchange.js"],
+        "run_at": "document_idle" 
+      },
+      {
+        "matches": ["https://flaskfinewines.com/*/products/*"],
+        "js": ["content_scripts/flaskfinewines.js"],
+        "run_at": "document_idle" 
+      }
     ]
   }

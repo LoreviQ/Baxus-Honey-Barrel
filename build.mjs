@@ -1,16 +1,20 @@
 // build.mjs
 import * as esbuild from 'esbuild';
 import { cp } from 'node:fs/promises'; // Use Node's built-in file copy
+import { glob } from 'glob'; // Import glob
 
 const isWatchMode = process.argv.includes('--watch');
 const outdir = 'dist';
+
+// Find content scripts
+const contentScripts = glob.sync('src/content_scripts/**/*.ts'); // Adjust pattern if needed (e.g., .js)
 
 // --- esbuild configuration ---
 const esbuildOptions = {
   entryPoints: [
     'src/background/service-worker.ts',
+    ...contentScripts, // Add discovered content scripts
     // Add other entry points if you have them:
-    // 'src/content/content-script.ts',
     // 'src/popup/popup.tsx', // Example if using React/JSX
     // 'src/options/options.html', // esbuild can process HTML too, or copy it
   ],
