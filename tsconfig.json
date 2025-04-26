@@ -1,15 +1,75 @@
+// tsconfig.json
 {
-    "compilerOptions": {
-      "target": "ES2016", // Target modern JS features supported by Chrome
-      "module": "CommonJS", // Or ESNext if preferred, adjust manifest/background script loading if needed
-      "outDir": "./dist", // Output directory as specified in structure
-      "rootDir": "./src", // Source directory
-      "strict": true, // Enable strict type checking
-      "esModuleInterop": true, // Allows default imports from commonjs modules
-      "skipLibCheck": true, // Skip type checking of declaration files
-      "forceConsistentCasingInFileNames": true, // Ensure consistent file casing
-      "lib": ["ES2016", "DOM"] // Include necessary libraries
-    },
-    "include": ["src/**/*"], // Include all files in src
-    "exclude": ["node_modules"] // Exclude node_modules
-  }
+  "compilerOptions": {
+    // --- Target & Module System ---
+    // Target a reasonably modern ECMAScript version supported by recent Chrome versions.
+    // ES2020 is a good balance of modern features and broad compatibility.
+    "target": "ES2020",
+
+    // Use standard ES modules. Most modern bundlers and Chrome itself work well with this.
+    "module": "ES2020",
+
+    // Include standard ES2020 libraries, DOM typings, and Iterable typings for DOM collections.
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+
+    // --- Module Resolution ---
+    // How TypeScript finds modules.
+    // "Node" is a classic robust choice that works well standalone or with many bundlers.
+    // "Bundler" is a newer option specifically designed for use with bundlers like Vite, esbuild, Webpack.
+    // Choose "Bundler" if you are using a modern bundler setup, otherwise "Node" is safer.
+    "moduleResolution": "Node", // Or "Bundler" if using a bundler
+
+    // --- Output ---
+    // Specify the output directory for compiled JavaScript files.
+    "outDir": "./dist",
+
+    // Define the root directory of your source TypeScript files.
+    "rootDir": "./src",
+
+    // Generate source maps (.js.map files) for easier debugging in Chrome DevTools.
+    "sourceMap": true,
+
+    // --- Strictness & Code Quality ---
+    // Enable all strict type-checking options. Highly recommended for catching errors early.
+    "strict": true,
+    "noImplicitAny": true, // Part of 'strict'. Error on implicit 'any' types.
+    "strictNullChecks": true, // Part of 'strict'. Handle null and undefined explicitly.
+
+    // Disallow inconsistently-cased references to the same file.
+    "forceConsistentCasingInFileNames": true,
+
+    // You might also consider adding these for stricter checks:
+    // "noUnusedLocals": true, // Report errors on unused local variables.
+    // "noUnusedParameters": true, // Report errors on unused function parameters.
+
+    // --- Interoperability ---
+    // Allow default imports from modules with no default export. Required for 'allowSyntheticDefaultImports'.
+    "esModuleInterop": true,
+
+    // Allow 'import x from y' when module y has no default export. Often needed with esModuleInterop.
+    "allowSyntheticDefaultImports": true,
+
+    // --- Environment Specifics ---
+    // Explicitly include types for the Chrome Extension APIs.
+    // Requires installing the 'chrome-types' package.
+    "types": ["chrome"],
+
+    // --- Build Performance ---
+    // Skip type checking of all declaration files (*.d.ts). Useful for faster builds,
+    // especially if dependency types have issues (as seen in search result 2.4).
+    "skipLibCheck": true,
+
+    // --- JSX (If using React/Preact/etc. for popup/options pages) ---
+    // Uncomment and configure if you use JSX syntax.
+    // "jsx": "react-jsx" // Example for React 17+
+  },
+  // Define which files TypeScript should include in the compilation process.
+  "include": [
+    "src/**/*" // Include all files in the src directory
+  ],
+  // Define which files/directories TypeScript should exclude.
+  "exclude": [
+    "node_modules", // Standard practice to ignore dependencies
+    "dist" // Ignore the output directory
+  ]
+}
