@@ -1,20 +1,23 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import ReactDOM from 'react-dom/client';
 import './popup.css';
+import { Listing } from '../types/listing'; 
 
 const DEFAULT_MESSAGES = ["Hello!","I'm BOB, the BAXUS Outstanding Butler!","I'll let you know if I find you any deals!"];
 const DEFAULT_IMAGE = "../assets/bob.png";
 const WG_IMAGE = "../assets/bobWG.png";
 
+type MessageType = string | React.ReactNode;
+
 const Popup = () => {
-  const [messages, setMessages] = useState<string[]>(DEFAULT_MESSAGES);
+  const [messages, setMessages] = useState<MessageType[]>(DEFAULT_MESSAGES);
   const [imageSrc, setImageSrc] = useState<string>(DEFAULT_IMAGE);
   const [isWhiskeyGogglesActive, setIsWhiskeyGogglesActive] = useState<boolean>(false);
   const [whiskeyGogglesResult, setWhiskeyGogglesResult] = useState<string | null>(null);
 
   useEffect(() => {
-    // Check chrome.storage.local for WG results or regular messages on initial load
-    chrome.storage.local.get(['whiskeyGogglesResult', 'popupMessage'], (result) => {
+    // Check chrome.storage.local for WG results or bestMatch on initial load
+    chrome.storage.local.get(['whiskeyGogglesResult', 'bestMatch'], (result) => {
       if (chrome.runtime.lastError) {
         console.error("Error retrieving from storage:", chrome.runtime.lastError);
         const errMessage = chrome.runtime.lastError.message ? chrome.runtime.lastError.message : "Unknown error";
@@ -23,7 +26,7 @@ const Popup = () => {
       }
 
       const storedWGResult = result.whiskeyGogglesResult;
-      const storedPopupMessage = result.popupMessage;
+      const storedBestMatch: Listing | undefined = result.bestMatch;
 
       if (storedWGResult) {
         // If we have a whiskey goggles result, display it
@@ -33,10 +36,16 @@ const Popup = () => {
         setIsWhiskeyGogglesActive(true);
         chrome.storage.local.remove('whiskeyGogglesResult');
         chrome.action.setBadgeText({ text: '' });
-      } else if (storedPopupMessage) {
-        // If we have a popup message, display it
-        setMessages(["Saving detected!", storedPopupMessage]);
-        chrome.storage.local.remove('popupMessage');
+      } else if (storedBestMatch) {
+        // If we have a bestMatch, display it with a link
+        console.log("Found bestMatch in storage:", storedBestMatch);
+        const matchLink = (
+          <a href={`https://www.baxus.co/asset/${storedBestMatch.id}`} target="_blank" rel="noopener noreferrer">
+            {storedBestMatch.name}
+          </a>
+        );
+        setMessages(["Saving detected!", matchLink]);
+        chrome.storage.local.remove('bestMatch'); // Clear the stored match
         chrome.action.setBadgeText({ text: '' });
       }
     });

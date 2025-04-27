@@ -52,7 +52,7 @@ body {
     font-family: sans-serif; 
     font-size: 16px;
     padding: 5px;
-    margin: 10px;
+    margin: 5px;
     border-radius: 5px;
     background-color: #3f3f3f;
 }
@@ -68,6 +68,16 @@ body {
     transform: skewX(35deg);
     border-bottom-left-radius: 0.5rem;
     z-index: -1;
+}
+
+/* Style links within messages */
+.message a {
+    color: white;
+    text-decoration: underline; /* Keep the underline */
+}
+
+.message a:hover {
+    color: lightblue;
 }
 
 /* New styles for buttons */
