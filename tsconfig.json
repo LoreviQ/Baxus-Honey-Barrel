@@ -52,7 +52,6 @@
     // --- Environment Specifics ---
     // Explicitly include types for the Chrome Extension APIs.
     // Requires installing the 'chrome-types' package.
-    "types": ["chrome"],
 
     // --- Build Performance ---
     // Skip type checking of all declaration files (*.d.ts). Useful for faster builds,
@@ -61,7 +60,8 @@
 
     // --- JSX (If using React/Preact/etc. for popup/options pages) ---
     // Uncomment and configure if you use JSX syntax.
-    // "jsx": "react-jsx" // Example for React 17+
+    "jsx": "react-jsx", // Example for React 17+
+    "types": ["chrome", "react", "react-dom"] // Add react/react-dom types
   },
   // Define which files TypeScript should include in the compilation process.
   "include": [

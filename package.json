@@ -21,10 +21,14 @@
   "description": "",
   "dependencies": {
     "axios": "^1.9.0",
-    "fuse.js": "^7.1.0"
+    "fuse.js": "^7.1.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
   },
   "devDependencies": {
     "@types/chrome": "^0.0.317",
+    "@types/react": "^19.1.2",
+    "@types/react-dom": "^19.1.2",
     "cpy-cli": "^5.0.0",
     "esbuild": "^0.25.3",
     "glob": "^11.0.2",

@@ -14,7 +14,7 @@ const esbuildOptions = {
   entryPoints: [
     'src/background/service-worker.ts',
     ...contentScripts, // Add discovered content scripts
-    'src/popup/popup.ts', // Add the new popup script
+    'src/popup/popup.tsx', // Change entry point to .tsx
     // Add other entry points if you have them:
     // 'src/options/options.html', // esbuild can process HTML too, or copy it
   ],
@@ -25,8 +25,8 @@ const esbuildOptions = {
   format: 'esm', // Output format: ES Modules (required for service worker with "type": "module")
   target: 'es2020', // Target JS version (align with tsconfig.json)
   // If using React/JSX, uncomment and configure:
-  // jsx: 'automatic', // or 'transform' + jsxFactory/jsxFragment
-  // loader: { '.js': 'jsx' }, // Example if mixing JS/JSX
+  jsx: 'automatic', // or 'transform' + jsxFactory/jsxFragment
+  loader: { '.tsx': 'tsx' }, // Handle .tsx files
 };
 
 // --- Function to copy static files ---
