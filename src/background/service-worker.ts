@@ -10,25 +10,26 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         const scrapedData: ScrapedProductData = message.data;
         console.log("Honey Barrel (Background): Received scraped data:", scrapedData);
 
-        // enclose in async function to use await - DONE
         const bestMatch = await checkBaxus(scrapedData);
         if (bestMatch) {
-            // Store the name to be displayed in the popup
             await chrome.storage.local.set({ popupMessage: `Found match: ${bestMatch.name}` });
-            // Optional: Set a badge to indicate new data is available
-            await chrome.action.setBadgeText({ text: '!' });
-            await chrome.action.setBadgeBackgroundColor({ color: '#f4d345' });
-            // Note: We don't programmatically open the popup here.
-            // The user opens it, and popup.js reads the stored data.
+            // Attempt to open the popup programmatically.
+            // Note: This might fail if not triggered by a user gesture in some contexts.
+            try {
+                await chrome.action.openPopup();
+            } catch (error) {
+                console.error("Honey Barrel (Background): Failed to open popup:", error);
+                // Fallback or alternative notification could be added here if needed,
+                // like setting the badge again.
+                await chrome.action.setBadgeText({ text: '!' });
+                await chrome.action.setBadgeBackgroundColor({ color: '#f4d345' });
+            }
         } else {
-            // Clear any previous message if no match is found
             await chrome.storage.local.remove('popupMessage');
-            await chrome.action.setBadgeText({ text: '' });
+            // No badge to clear if we are primarily using openPopup
+            // await chrome.action.setBadgeText({ text: '' }); 
         }
     }
-
-    // Indicate that the response will be sent asynchronously (optional but good practice)
-    // return true; // Uncomment if you need to use sendResponse asynchronously later
 });
   
 // Keep the service worker alive briefly after install/update for initialization if needed
