@@ -41,6 +41,10 @@ const Popup = () => {
         <div className="right-column">
           <img id="popup-image" src="../assets/bob.png" alt="Popup Image" />
         </div>
+        <div className="button-container">
+          <button onClick={() => console.log("Chat to BOB clicked")}>Chat to BOB</button>
+          <button onClick={() => console.log("Whiskey Goggles clicked")}>Whiskey Goggles</button>
+        </div>
       </div>
     </div>
   );

@@ -69,3 +69,45 @@ body {
     border-bottom-left-radius: 0.5rem;
     z-index: -1;
 }
+
+/* New styles for buttons */
+.button-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  z-index: 2; /* Ensure buttons are above other content */
+}
+
+.button-container button {
+  width: 50%;
+  height: 50px;
+  background-color: rgba(229, 153, 9, 0.4); /* Orange with 20% opacity */
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  color: white; /* Change text color to white */
+  text-shadow: 
+    -1px -1px 0 #000,  
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000; /* Add black outline */
+  transition: background-color 0.3s ease; /* Smooth transition for hover */
+}
+
+.button-container button:hover {
+  background-color: rgba(229, 153, 9, 0.8); /* Orange with 60% opacity */
+}
+
+/* Optional: Style first and last button for rounded corners matching container */
+.button-container button:first-child {
+  border-bottom-left-radius: 5px;
+}
+
+.button-container button:last-child {
+  border-bottom-right-radius: 5px;
+}
