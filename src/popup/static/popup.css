@@ -48,11 +48,24 @@ body {
 
 .message {
     position: relative;
-    color: black;
+    color: white;
     font-family: sans-serif; 
     font-size: 16px;
-    border: black 2px solid;
     padding: 5px;
     margin: 10px;
     border-radius: 5px;
+    background-color: #3f3f3f;
+}
+
+.message::before {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background-color: #3f3f3f;
+    bottom: -8px;
+    right: 8px;
+    transform: skewX(35deg);
+    border-bottom-left-radius: 0.5rem;
+    z-index: -1;
 }
