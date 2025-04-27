@@ -16,6 +16,9 @@
       "default_title": "Fetch BAXUS Data",
       "default_popup": "popup/popup.html"
     },
+    "permissions": [
+        "storage"
+    ],
     "host_permissions": [
       "https://services.baxus.co/*"
     ],
