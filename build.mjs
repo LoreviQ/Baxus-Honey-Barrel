@@ -6,17 +6,16 @@ import { glob } from 'glob'; // Import glob
 const isWatchMode = process.argv.includes('--watch');
 const outdir = 'dist';
 
-// Find content scripts
-const contentScripts = glob.sync('src/content_scripts/**/*.ts'); // Adjust pattern if needed (e.g., .js)
+// Find content scripts - update pattern to include subdirectories
+const contentScripts = glob.sync('src/content_scripts/**/*.ts'); // Find .ts files in content_scripts and subdirs
 
 // --- esbuild configuration ---
 const esbuildOptions = {
   entryPoints: [
     'src/background/service-worker.ts',
-    ...contentScripts, // Add discovered content scripts
-    'src/popup/popup.tsx', // Change entry point to .tsx
+    ...contentScripts, // Add discovered content scripts (includes whiskeyGoggles.ts)
+    'src/popup/popup.tsx',
     // Add other entry points if you have them:
-    // 'src/options/options.html', // esbuild can process HTML too, or copy it
   ],
   bundle: true, // Enable bundling (follow imports and include dependencies)
   outdir: outdir, // Output directory ('dist')
@@ -26,7 +25,7 @@ const esbuildOptions = {
   target: 'es2020', // Target JS version (align with tsconfig.json)
   // If using React/JSX, uncomment and configure:
   jsx: 'automatic', // or 'transform' + jsxFactory/jsxFragment
-  loader: { '.tsx': 'tsx' }, // Handle .tsx files
+  loader: { '.tsx': 'tsx', '.ts': 'ts' }, // Ensure .ts loader is present
 };
 
 // --- Function to copy static files ---
@@ -34,14 +33,10 @@ async function copyStaticFiles() {
   try {
     await cp('manifest.json', `${outdir}/manifest.json`);
     await cp('assets', `${outdir}/assets`, { recursive: true });
-    await cp('src/popup/static', `${outdir}/popup`, { recursive: true }); // Add this line to copy the popup directory
+    await cp('src/content_scripts/whiskeyGoggles.css', `${outdir}/content_scripts/whiskeyGoggles.css`);
+    await cp('src/popup/popup.css', `${outdir}/popup/popup.css`);
+    await cp('src/popup/popup.html', `${outdir}/popup/popup.html`);
 
-    // Copy popup HTML/CSS if they exist and aren't handled by esbuild
-    // await cp('public/popup.html', `${outdir}/popup.html`);
-    // await cp('public/popup.css', `${outdir}/popup.css`);
-
-    // Copy any other static assets
-    // ...
 
     console.log('Static files copied successfully.');
   } catch (error) {
@@ -53,29 +48,34 @@ async function copyStaticFiles() {
 // --- Build or Watch ---
 async function build() {
   try {
+    // Ensure outdir structure matches expected paths in manifest.json
+    // esbuild automatically creates subdirectories based on entry point paths relative to a common ancestor
+    // or you might need to adjust outbase if structure isn't matching.
+    // For this setup, esbuild should place outputs like:
+    // dist/background/service-worker.js
+    // dist/content_scripts/thewhiskyexchange.js
+    // dist/content_scripts/whiskeyGoggles.js
+    // dist/popup/popup.js
+
     const context = await esbuild.context(esbuildOptions);
 
     if (isWatchMode) {
       console.log('Starting esbuild watch...');
       await context.watch();
       console.log('Watching for changes...');
-      // Also copy static files initially in watch mode
-      await copyStaticFiles();
-      // In a real watch mode, you might want to re-copy static files on change too,
-      // but for simplicity here, we do it once at the start.
-      // Or use a library like 'chokidar' to watch static files separately.
+      await copyStaticFiles(); // Copy static files initially
     } else {
       console.log('Building with esbuild...');
       await context.rebuild();
       await context.dispose(); // Dispose context after build
       console.log('esbuild build complete.');
-      // Copy static files after build completes
-      await copyStaticFiles();
+      await copyStaticFiles(); // Copy static files after build
     }
   } catch (error) {
     console.error('Build failed:', error);
     process.exit(1);
   }
 }
+
 
 build(); // Run the build function

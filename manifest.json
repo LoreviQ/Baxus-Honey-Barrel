@@ -17,7 +17,8 @@
       "default_popup": "popup/popup.html"
     },
     "permissions": [
-        "storage"
+        "storage",
+        "activeTab"
     ],
     "host_permissions": [
       "https://services.baxus.co/*"
@@ -26,17 +27,27 @@
       {
         "matches": ["https://www.thewhiskyexchange.com/p/*"],
         "js": ["content_scripts/thewhiskyexchange.js"],
-        "run_at": "document_idle" 
+        "run_at": "document_idle"
       },
       {
         "matches": ["https://flaskfinewines.com/*/products/*"],
         "js": ["content_scripts/flaskfinewines.js"],
-        "run_at": "document_idle" 
+        "run_at": "document_idle"
+      },
+      {
+        "matches": ["<all_urls>"],
+        "js": ["content_scripts/whiskeyGoggles.js"],
+        "css": ["content_scripts/whiskeyGoggles.css"],
+        "run_at": "document_start"
       }
     ],
     "web_accessible_resources": [
         {
-          "resources": [ "assets/*", "popup/popup.css" ],
+          "resources": [
+            "assets/*",
+            "popup/popup.css",
+            "content_scripts/static/*"
+           ],
           "matches": [ "<all_urls>" ]
         }
       ]
