@@ -11,16 +11,21 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 
         const bestMatch = await checkBaxus(scrapedData);
         if (bestMatch) {
-            // Store the bestMatch object instead of just a message string
-            await chrome.storage.local.set({ bestMatch: bestMatch }); 
-            try {
-                // Attempt to open the popup
-                await chrome.action.openPopup();
-            } catch (error) {
-                // Show badge error if popup fails to open
-                console.error("Honey Barrel (Background): Failed to open popup:", error);
-                await chrome.action.setBadgeText({ text: '!' });
-                await chrome.action.setBadgeBackgroundColor({ color: '#f4d345' });
+            // compare prices. Only show if the price is lower than the scraped data
+            if (!scrapedData.price || bestMatch.price < scrapedData.price) {
+                console.log("Honey Barrel (Background): Found a better match:", bestMatch);
+                // Store the bestMatch object instead of just a message string
+                await chrome.storage.local.set({ bestMatch: bestMatch }); 
+                await chrome.storage.local.set({ scrapedData: scrapedData }); 
+                try {
+                    // Attempt to open the popup
+                    await chrome.action.openPopup();
+                } catch (error) {
+                    // Show badge error if popup fails to open
+                    console.error("Honey Barrel (Background): Failed to open popup:", error);
+                    await chrome.action.setBadgeText({ text: '!' });
+                    await chrome.action.setBadgeBackgroundColor({ color: '#f4d345' });
+                }
             }
         } else {
             // Ensure bestMatch is removed if no match is found

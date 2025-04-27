@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import ReactDOM from 'react-dom/client';
 import './popup.css';
 import { Listing } from '../types/listing'; 
+import { ScrapedProductData } from '../types/scrapedData';
 
 const DEFAULT_MESSAGES = ["Hello!","I'm BOB, the BAXUS Outstanding Butler!","I'll let you know if I find you any deals!"];
 const DEFAULT_IMAGE = "../assets/bob.png";
@@ -17,16 +18,17 @@ const Popup = () => {
 
   useEffect(() => {
     // Check chrome.storage.local for WG results or bestMatch on initial load
-    chrome.storage.local.get(['whiskeyGogglesResult', 'bestMatch'], (result) => {
+    chrome.storage.local.get(['whiskeyGogglesResult', 'bestMatch', 'scrapedData'], (result) => {
       if (chrome.runtime.lastError) {
         console.error("Error retrieving from storage:", chrome.runtime.lastError);
         const errMessage = chrome.runtime.lastError.message ? chrome.runtime.lastError.message : "Unknown error";
         setMessages(['Sorry I seem to have short-circuited!', errMessage]);
         return;
       }
-
+      console.log("Storage retrieval result:", result);
       const storedWGResult = result.whiskeyGogglesResult;
       const storedBestMatch: Listing | undefined = result.bestMatch;
+      const scrapedData: ScrapedProductData | undefined = result.scrapedData;
 
       if (storedWGResult) {
         // If we have a whiskey goggles result, display it
@@ -44,7 +46,13 @@ const Popup = () => {
             {storedBestMatch.name}
           </a>
         );
-        setMessages(["Saving detected!", matchLink]);
+        let messages = ["SAVINGS DETECTED", matchLink];
+        if (scrapedData && scrapedData.price) {
+          const priceDifference = scrapedData.price - storedBestMatch.price;
+          const currency = scrapedData.currency || '$';
+          messages.push(`Money Saved: ${currency}${priceDifference.toFixed(2)}`);
+        }
+        setMessages(messages);
         chrome.storage.local.remove('bestMatch'); // Clear the stored match
         chrome.action.setBadgeText({ text: '' });
       }
