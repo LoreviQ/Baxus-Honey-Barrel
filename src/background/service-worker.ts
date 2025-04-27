@@ -32,10 +32,21 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         // This message will come from the content script after the user selects an image
         console.log("Honey Barrel (Background): Received selected image data:", message.data);
         const imageSrc = message.data.src;
-        // TODO: Add logic to process the imageSrc (e.g., send to an API)
-        console.log("Selected image source:", imageSrc);
-        // Optionally send a response back to the content script if needed
-        // sendResponse({ status: "Image received" });
+
+        // Simulate processing the image source
+        console.log("Honey Barrel (Background): Simulating image processing for:", imageSrc);
+        await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate 1 second processing time
+        const processingResult = `Processed: ${imageSrc.substring(imageSrc.lastIndexOf('/') + 1)}`; // Example result
+        console.log("Honey Barrel (Background): Image processing complete. Result:", processingResult);
+
+        // Store the result in local storage for the popup to pick up
+        await chrome.storage.local.set({ whiskeyGogglesResult: processingResult });
+
+        // Set a badge to notify the user
+        await chrome.action.setBadgeText({ text: 'WG' });
+        await chrome.action.setBadgeBackgroundColor({ color: '#FFA500' }); // Orange color for WG badge
+
+        // No need to send a response back for this message type
     }
     // Indicate that the response function will be called asynchronously
     // Return true only if you intend to use sendResponse asynchronously.

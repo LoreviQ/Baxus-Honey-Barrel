@@ -1,10 +1,12 @@
 .honey-barrel-highlight-element {
-  outline: 3px solid yellow !important;
-  box-shadow: 0 0 10px yellow !important;
+  outline: 3px solid #f4d345; 
+  box-shadow: inset 0 0 0 1000px rgba(244, 211, 69, 0.3);
   cursor: crosshair !important;
+  z-index: 9998; 
+  position: relative;
 }
 
-/* Optional: Style for the body during selection */
+
 body.honey-barrel-selecting {
     cursor: crosshair !important;
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import ReactDOM from 'react-dom/client';
 import './popup.css';
 
@@ -9,68 +9,93 @@ const WG_IMAGE = "../assets/bobWG.png";
 const Popup = () => {
   const [messages, setMessages] = useState<string[]>(DEFAULT_MESSAGES);
   const [imageSrc, setImageSrc] = useState<string>(DEFAULT_IMAGE);
+  const [isWhiskeyGogglesActive, setIsWhiskeyGogglesActive] = useState<boolean>(false);
+  const [whiskeyGogglesResult, setWhiskeyGogglesResult] = useState<string | null>(null);
 
   useEffect(() => {
-    // Listener for messages from content script or background
-    const messageListener = (message: any, sender: chrome.runtime.MessageSender, sendResponse: (response?: any) => void) => {
-      console.log("Popup received message:", message);
-      if (message.type === "IMAGE_SELECTED") {
-        const selectedImageSrc = message.data.src;
-        setMessages([`Selected Image Source:`, selectedImageSrc]);
-        // Optionally change BOB's image back or to something else
-        // setImageSrc(DEFAULT_IMAGE);
-      }
-      // Handle other message types if needed
-    };
-
-    chrome.runtime.onMessage.addListener(messageListener);
-
-    // Check chrome.storage.local for a message on initial load
-    chrome.storage.local.get(['popupMessage'], (result) => {
-      // ... existing storage check logic ...
+    // Check chrome.storage.local for WG results or regular messages on initial load
+    chrome.storage.local.get(['whiskeyGogglesResult', 'popupMessage'], (result) => {
       if (chrome.runtime.lastError) {
-        console.error("Error retrieving message:", chrome.runtime.lastError);
+        console.error("Error retrieving from storage:", chrome.runtime.lastError);
         const errMessage = chrome.runtime.lastError.message ? chrome.runtime.lastError.message : "Unknown error";
         setMessages(['Sorry I seem to have short-circuited!', errMessage]);
         return;
       }
 
-      const storedMessage = result.popupMessage;
-      if (storedMessage) {
-        setMessages(["I found you a saving!", storedMessage]);
+      const storedWGResult = result.whiskeyGogglesResult;
+      const storedPopupMessage = result.popupMessage;
+
+      if (storedWGResult) {
+        // If we have a whiskey goggles result, display it
+        console.log("Found WG result in storage:", storedWGResult);
+        setWhiskeyGogglesResult(storedWGResult);
+        setMessages(["Whiskey Goggles Result:", storedWGResult]);
+        setIsWhiskeyGogglesActive(true);
+        chrome.storage.local.remove('whiskeyGogglesResult');
+        chrome.action.setBadgeText({ text: '' });
+      } else if (storedPopupMessage) {
+        // If we have a popup message, display it
+        setMessages(["Saving detected!", storedPopupMessage]);
         chrome.storage.local.remove('popupMessage');
         chrome.action.setBadgeText({ text: '' });
       }
     });
+    return () => {};
+  }, []); 
 
-    // Cleanup function to remove the listener when the popup closes
-    return () => {
-      chrome.runtime.onMessage.removeListener(messageListener);
-    };
-  }, []); // Empty dependency array ensures this runs once on mount and cleanup on unmount
+  useEffect(() => {
+    if (isWhiskeyGogglesActive) {
+      setImageSrc(WG_IMAGE);
+    } else {
+      setImageSrc(DEFAULT_IMAGE);
+    }
+  }, [isWhiskeyGogglesActive]);
 
-  const handleWhiskeyGogglesClick = async () => {
-    console.log("Whiskey Goggles clicked");
-    setImageSrc(WG_IMAGE); // Keep visual feedback in popup
-
+  const sendMessageToActiveTab = async (message:string, onError?: (error: any) => void) => {
     // Find the active tab
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-
-    if (tab && tab.id) {
-      try {
-        // Send a message to the content script in the active tab
-        await chrome.tabs.sendMessage(tab.id, { type: "INITIATE_IMAGE_SELECTION" });
-        // Popup stays open - removed window.close();
-        setMessages(["Please click an image on the page..."]); // Update status message
-      } catch (error) {
-        console.error("Could not send message to content script:", error);
-        // Handle error, maybe display a message to the user in the popup
-        setMessages(["Error: Could not connect to the page. Try reloading."]);
-      }
-    } else {
+    if (!tab || !tab.id) {
       console.error("Could not find active tab.");
       setMessages(["Error: Could not find active tab."]);
+      return;
     }
+    try {
+      await chrome.tabs.sendMessage(tab.id, { type: message });
+    } catch (error) {
+      console.error(`Could not send ${message} message to content script:`, error);
+      setMessages(['Sorry I seem to have short-circuited!', "Try reloading the page."]);
+      if (onError) {
+        onError(error);
+      }
+    }
+  }
+
+  const handleWhiskeyGogglesClick = async () => {
+    console.log("Whiskey Goggles clicked. Active state:", isWhiskeyGogglesActive);
+    if (!isWhiskeyGogglesActive) {
+      // Activate WG mode
+      console.log("Activating WG mode");
+      setIsWhiskeyGogglesActive(true);
+      setMessages(["DETECTING WHISKEY", "Please select your image"]);
+      setWhiskeyGogglesResult(null);
+      sendMessageToActiveTab("INITIATE_IMAGE_SELECTION", () => {setIsWhiskeyGogglesActive(false);});
+      return;
+    } 
+
+    if (whiskeyGogglesResult) {
+      // If there's a previous result, activate image selection mode
+      setMessages(["DETECTING WHISKEY", "Please select your image"]);
+      setWhiskeyGogglesResult(null);
+      sendMessageToActiveTab("INITIATE_IMAGE_SELECTION", () => {setIsWhiskeyGogglesActive(false);});
+      return;
+    }
+
+    // Deactivate WG mode
+    console.log("Deactivating WG mode");
+    setIsWhiskeyGogglesActive(false);
+    setMessages(DEFAULT_MESSAGES);
+    setWhiskeyGogglesResult(null);
+    sendMessageToActiveTab("CANCEL_IMAGE_SELECTION");
   };
 
   return (
@@ -108,3 +133,4 @@ if (rootElement) {
 } else {
   console.error('Could not find root element to mount React app');
 }
+

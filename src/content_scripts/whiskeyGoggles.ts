@@ -35,7 +35,7 @@ const handleClick = (event: MouseEvent) => {
   if (event.target instanceof HTMLImageElement) {
     const imageSrc = event.target.src;
     console.log("Honey Barrel: Image selected:", imageSrc);
-    // Send message directly to the runtime (popup will listen)
+    // Send message to the runtime (background script will listen)
     chrome.runtime.sendMessage({ type: "IMAGE_SELECTED", data: { src: imageSrc } });
     cleanup(); // Clean up listeners and styles
   } else {
@@ -50,6 +50,7 @@ const cleanup = () => {
   console.log("Honey Barrel: Cleaning up image selection listeners.");
   removeHighlight();
   document.body.style.cursor = 'default'; // Restore cursor
+  document.body.classList.remove('honey-barrel-selecting'); // Remove body class
   document.removeEventListener('mouseover', handleMouseOver, true);
   document.removeEventListener('click', handleClick, true);
   // Style element removal is no longer needed as CSS is injected via manifest
@@ -60,12 +61,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   console.log("Honey Barrel (Whiskey Goggles Content Script): Message received", message);
   if (message.type === "INITIATE_IMAGE_SELECTION") {
     console.log("Honey Barrel: Initiating image selection mode.");
-    // Style injection is now handled by manifest.json loading whiskeyGoggles.css
     document.body.style.cursor = 'crosshair'; // Change cursor
+    document.body.classList.add('honey-barrel-selecting'); // Add body class
     // Use capturing phase for listeners to catch events early
     document.addEventListener('mouseover', handleMouseOver, true);
     document.addEventListener('click', handleClick, true);
-    // No need to call sendResponse if not sending anything back immediately
+  } else if (message.type === "CANCEL_IMAGE_SELECTION") {
+    console.log("Honey Barrel: Cancelling image selection mode.");
+    cleanup();
   }
-  // Return true if you intend to use sendResponse asynchronously (not needed here)
 });
