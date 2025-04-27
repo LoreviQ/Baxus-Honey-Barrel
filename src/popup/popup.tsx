@@ -131,7 +131,7 @@ const Popup = () => {
           <img id="popup-image" src={imageSrc} alt="Popup Image" />
         </div>
         <div className="button-container">
-          <button onClick={() => console.log("Chat to BOB clicked")}>Chat to BOB</button>
+          <button onClick={() => chrome.tabs.create({ url: 'https://baxathon.oliver.tj/bob' })}>Chat to BOB</button>
           <button onClick={handleWhiskeyGogglesClick}>Whiskey Goggles</button>
         </div>
       </div>
