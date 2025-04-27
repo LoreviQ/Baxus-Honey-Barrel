@@ -3,9 +3,12 @@ import ReactDOM from 'react-dom/client';
 import './static/popup.css';
 
 const DEFAULT_MESSAGES = ["Hello!","I'm BOB, the BAXUS Outstanding Butler!","I'll let you know if I find you any deals!"];
+const DEFAULT_IMAGE = "../assets/bob.png";
+const WG_IMAGE = "../assets/bobWG.png";
 
 const Popup = () => {
   const [messages, setMessages] = useState<string[]>(DEFAULT_MESSAGES);
+  const [imageSrc, setImageSrc] = useState<string>(DEFAULT_IMAGE);
 
   useEffect(() => {
     // Check chrome.storage.local for a message
@@ -26,6 +29,12 @@ const Popup = () => {
     });
   }, []);
 
+  const handleWhiskeyGogglesClick = () => {
+    console.log("Whiskey Goggles clicked");
+    setImageSrc(WG_IMAGE);
+    // Optionally, reset the image after some time or on another action
+  };
+
   return (
     <div className="container">
       <div className="content-area">
@@ -39,11 +48,11 @@ const Popup = () => {
           </div>
         </div>
         <div className="right-column">
-          <img id="popup-image" src="../assets/bob.png" alt="Popup Image" />
+          <img id="popup-image" src={imageSrc} alt="Popup Image" />
         </div>
         <div className="button-container">
           <button onClick={() => console.log("Chat to BOB clicked")}>Chat to BOB</button>
-          <button onClick={() => console.log("Whiskey Goggles clicked")}>Whiskey Goggles</button>
+          <button onClick={handleWhiskeyGogglesClick}>Whiskey Goggles</button>
         </div>
       </div>
     </div>
