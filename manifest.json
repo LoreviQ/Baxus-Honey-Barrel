@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
-    "name": "BAXUS API Tester",
+    "name": "BAXUS Honey Barrel",
     "version": "0.1",
-    "description": "Makes a request to the BAXUS search API when the icon is clicked.",
+    "description": "Intelligently finds users savings on whiskey products via the BAXUS marketplace.",
     "icons": {
       "16": "assets/icons/icon16.png",
       "48": "assets/icons/icon48.png",
