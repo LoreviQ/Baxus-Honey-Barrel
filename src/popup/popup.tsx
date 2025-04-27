@@ -30,9 +30,9 @@ const Popup = () => {
     <div className="container">
       <div className="content-area">
         <div className="left-column">
-        <div className="greeting-container" id="message-display">
+        <div className="message-container" id="message-display">
             {messages.map((message, index) => (
-              <div key={index} className="greeting">
+              <div key={index} className="message">
                 {message}
               </div>
             ))}
