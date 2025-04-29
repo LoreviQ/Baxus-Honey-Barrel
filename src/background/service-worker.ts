@@ -1,5 +1,6 @@
 import { ScrapedProductData } from '../types/scrapedData';
 import { checkBaxus } from '../utils/checkBaxus';
+import { predictImage } from '../utils/api';
 
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     console.log("Honey Barrel (Background): Message received:", message, "from sender:", sender);
@@ -36,18 +37,34 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         console.log("Honey Barrel (Background): Received selected image data:", message.data);
         const imageSrc = message.data.src;
 
-        // Simulate processing the image source
-        console.log("Honey Barrel (Background): Simulating image processing for:", imageSrc);
-        await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate 1 second processing time
-        const processingResult = `Processed: ${imageSrc.substring(imageSrc.lastIndexOf('/') + 1)}`; // Example result
-        console.log("Honey Barrel (Background): Image processing complete. Result:", processingResult);
+        try {
+            // Fetch the image from the URL
+            const response = await fetch(imageSrc);
+            const blob = await response.blob();
+            // Convert blob to File object
+            const imageFile = new File([blob], 'selected-image.jpg', { type: blob.type });
 
-        // Store the result in local storage for the popup to pick up
-        await chrome.storage.local.set({ whiskeyGogglesResult: processingResult });
+            // Process the image using the prediction API
+            const predictionResult = await predictImage(imageFile);
+            console.log("Honey Barrel (Background): Image processing complete. Result:", predictionResult);
 
-        // Set a badge to notify the user
-        await chrome.action.setBadgeText({ text: 'WG' });
-        await chrome.action.setBadgeBackgroundColor({ color: '#FFA500' }); // Orange color for WG badge
+            // Store the result in local storage for the popup to pick up
+            await chrome.storage.local.set({ whiskeyGogglesResult: predictionResult });
+            
+            try {
+                // Attempt to open the popup
+                await chrome.action.openPopup();
+            } catch (error) {
+                // Show badge error if popup fails to open
+                console.error("Honey Barrel (Background): Failed to open popup:", error);
+                await chrome.action.setBadgeText({ text: 'WG' });
+                await chrome.action.setBadgeBackgroundColor({ color: '#FFA500' });
+            }
+        } catch (error) {
+            console.error("Honey Barrel (Background): Failed to process image:", error);
+            await chrome.action.setBadgeText({ text: 'X' });
+            await chrome.action.setBadgeBackgroundColor({ color: '#FF0000' }); // Red color for error
+        }
     }
 });
 

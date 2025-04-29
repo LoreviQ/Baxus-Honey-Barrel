@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './popup.css';
 import { Listing } from '../types/listing'; 
 import { ScrapedProductData } from '../types/scrapedData';
+import { PredictionResponse } from '../types/prediction';
 
 const DEFAULT_MESSAGES = ["Hello!","I'm BOB, the BAXUS Outstanding Butler!","I'll let you know if I find you any deals!"];
 const DEFAULT_IMAGE = "../assets/bob.png";
@@ -14,7 +15,7 @@ const Popup = () => {
   const [messages, setMessages] = useState<MessageType[]>(DEFAULT_MESSAGES);
   const [imageSrc, setImageSrc] = useState<string>(DEFAULT_IMAGE);
   const [isWhiskeyGogglesActive, setIsWhiskeyGogglesActive] = useState<boolean>(false);
-  const [whiskeyGogglesResult, setWhiskeyGogglesResult] = useState<string | null>(null);
+  const [whiskeyGogglesResult, setWhiskeyGogglesResult] = useState<PredictionResponse | null>(null);
 
   useEffect(() => {
     // Check chrome.storage.local for WG results or bestMatch on initial load
@@ -26,15 +27,19 @@ const Popup = () => {
         return;
       }
       console.log("Storage retrieval result:", result);
-      const storedWGResult = result.whiskeyGogglesResult;
+      const storedWGResult: PredictionResponse | undefined = result.whiskeyGogglesResult;
       const storedBestMatch: Listing | undefined = result.bestMatch;
       const scrapedData: ScrapedProductData | undefined = result.scrapedData;
 
       if (storedWGResult) {
-        // If we have a whiskey goggles result, display it
+        // If we have a whiskey goggles result, display it with confidence
         console.log("Found WG result in storage:", storedWGResult);
         setWhiskeyGogglesResult(storedWGResult);
-        setMessages(["Whiskey Goggles Result:", storedWGResult]);
+        setMessages([
+          "WHISKEY IDENTIFIED",
+          storedWGResult.name,
+          `CONFIDENCE LEVEL ${storedWGResult.final_score_percent.toFixed(1)}%`
+        ]);
         setIsWhiskeyGogglesActive(true);
         chrome.storage.local.remove('whiskeyGogglesResult');
         chrome.action.setBadgeText({ text: '' });
