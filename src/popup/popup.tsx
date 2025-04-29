@@ -4,6 +4,7 @@ import './popup.css';
 import { Listing } from '../types/listing'; 
 import { ScrapedProductData } from '../types/scrapedData';
 import { PredictionResponse } from '../types/prediction';
+import { checkWhiskeyGogglesHealth } from '../utils/api';
 
 const DEFAULT_MESSAGES = ["Hello!","I'm BOB, the BAXUS Outstanding Butler!","I'll let you know if I find you any deals!"];
 const DEFAULT_IMAGE = "../assets/bob.png";
@@ -94,6 +95,14 @@ const Popup = () => {
 
   const handleWhiskeyGogglesClick = async () => {
     console.log("Whiskey Goggles clicked. Active state:", isWhiskeyGogglesActive);
+    
+    // Check if the service is running before proceeding
+    const isServiceHealthy = await checkWhiskeyGogglesHealth();
+    if (!isServiceHealthy) {
+      alert("Whiskey Goggles needs to be running locally to work.");
+      return;
+    }
+
     if (!isWhiskeyGogglesActive) {
       // Activate WG mode
       console.log("Activating WG mode");
