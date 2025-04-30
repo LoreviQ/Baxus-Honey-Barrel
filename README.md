@@ -1,9 +1,5 @@
 # Baxus Honey Barrel 🍯 - Find Sweet Whisky Deals!
 
-[![BOB the Butler](https://raw.githubusercontent.com/LoreviQ/Baxus-Honey-Barrel/main/assets/bob.png)](https://baxathon.oliver.tj/bob)
-
-Meet **BOB**, the **B**AXUS **O**utstanding **B**utler! He's the friendly face of the Baxus Honey Barrel, your trusty Chrome extension built for the **BAXATHON**!
-
 Tired of endlessly searching for the best prices on that perfect bottle of whisky or wine? BOB is here to help! The Honey Barrel automatically scans supported e-commerce sites you visit, identifies the bottle, and checks if you can get a sweeter deal on the **BAXUS marketplace**.
 
 ## What's Inside the Barrel? 🥃
